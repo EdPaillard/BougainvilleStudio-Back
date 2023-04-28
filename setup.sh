@@ -1,3 +1,3 @@
 #! /bin/bash
-mix ecto.reset
+mix ecto.setup
 mix phx.server

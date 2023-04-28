@@ -15,13 +15,13 @@ defmodule BougBack.MixProject do
   end
 
   # Configuration for the OTP application.
-  #
+  #Webdav
   # Type `mix help compile.app` for more information.
   def application do
     [
       # applications: [],
       mod: {BougBack.Application, []},
-      extra_applications: [:sftp, :logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -48,7 +48,7 @@ defmodule BougBack.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:guardian, "~> 2.3"},
       {:argon2_elixir, "~> 3.1.0"},
-      {:sftp, "~> 0.2.1"}
+      {:httpoison, "~> 2.1"}
     ]
   end
 

@@ -17,3 +17,13 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Docs: https://hexdocs.pm/phoenix
   * Forum: https://elixirforum.com/c/phoenix-forum
   * Source: https://github.com/phoenixframework/phoenix
+
+
+# API
+```bash
+curl 162.19.66.30:5000/fragment -H 'Content-Type: application/json' -d '{"fragment":{"content":[{"path":"fragment#1/main_content.txt", "type":"text", "file":"@./main_content.txt"}, {"path":"fragment#1/illustration.png", "type":"img", "file":"@./illustration.png"}], "description":"une description","miniature":"./illus.svg", "title":"un titre"}}'
+
+curl 162.19.66.30:5000/register -H 'Content-Type: application/json' -d '{"user":{"pseudo":"Squalli", "email":"test@test.com", "password":"mypass"}}'
+```
+
+
