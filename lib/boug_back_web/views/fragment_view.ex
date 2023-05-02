@@ -16,7 +16,8 @@ defmodule BougBackWeb.FragmentView do
       title: fragment.title,
       description: fragment.description,
       miniature: fragment.miniature,
-      content: fragment.content
+      content: fragment.content,
+      files: fragment.file
     }
   end
 end

@@ -1,27 +1,37 @@
 defmodule BougBackWeb.FragmentController do
   use BougBackWeb, :controller
 
-  alias BougBack.{Content, Content.Fragment, Ftp.Server}
+  alias BougBack.{Content, Content.Fragment, Webdav}
 
   action_fallback BougBackWeb.FallbackController
 
   def index(conn, _params) do
     fragments = Content.list_fragments()
-    render(conn, "index.json", fragments: fragments)
+    content = Enum.map(fragments, fn element ->
+      Enum.map(element["content"], fn element_content ->
+        Webdav.download_file(element_content["path"]) end)
+    end)
+    all_frags =
+      Enum.zip(fragments, content)
+      |> Enum.map(fn {fragment, frag_content} ->
+        Map.put(fragment, :file, frag_content)
+      end)
+    render(conn, "index.json", fragments: all_frags)
   end
 
   def create(conn, %{"fragment" => fragment_params}) do
     file = Enum.map(fragment_params["content"], &(&1["file"]))
+    path = Enum.map(fragment_params["content"], &(&1["path"]))
     fragment = Map.update(fragment_params, "content", nil, fn cont ->
       Enum.map(cont, fn file ->
         Map.delete(file, "file")
       end)
     end)
 
-    with {:ok, %Fragment{} = fragment} <- Content.create_fragment(fragment),
-         {:ok, stream} <- Server.upload_file(file) do
+    with {:ok, body} <- Webdav.upload_file(file, path),
+         {:ok, %Fragment{} = fragment} <- Content.create_fragment(fragment) do
 
-      inspect(item: stream, label: "STREAM")
+      inspect(item: body, label: "STREAM")
 
       conn
       |> put_status(:created)
@@ -32,7 +42,9 @@ defmodule BougBackWeb.FragmentController do
 
   def show(conn, %{"id" => id}) do
     fragment = Content.get_fragment!(id)
-    render(conn, "show.json", fragment: fragment)
+    content = Enum.map(fragment["content"], fn element -> Webdav.download_file(element["path"]) end)
+    full_frag = Map.put(fragment, :file, content)
+    render(conn, "show.json", fragment: full_frag)
   end
 
   def update(conn, %{"id" => id, "fragment" => fragment_params}) do
