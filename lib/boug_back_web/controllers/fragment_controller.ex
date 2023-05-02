@@ -20,18 +20,7 @@ defmodule BougBackWeb.FragmentController do
   end
 
   def create(conn, %{"fragment" => fragment_params}) do
-    file = Enum.map(fragment_params["content"], &(&1["file"]))
-    path = Enum.map(fragment_params["content"], &(&1["path"]))
-    fragment = Map.update(fragment_params, "content", nil, fn cont ->
-      Enum.map(cont, fn file ->
-        Map.delete(file, "file")
-      end)
-    end)
-
-    with {:ok, body} <- Webdav.upload_file(file, path),
-         {:ok, %Fragment{} = fragment} <- Content.create_fragment(fragment) do
-
-      inspect(item: body, label: "STREAM")
+    with {:ok, %Fragment{} = fragment} <- Content.create_fragment(fragment_params) do
 
       conn
       |> put_status(:created)

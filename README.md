@@ -21,9 +21,10 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 # API
 ```bash
-curl 162.19.66.30:5000/fragment -H 'Content-Type: application/json' -d '{"fragment":{"content":[{"path":{"folder":"fragment_1", "file":"main_content.txt"}, "type":"text", "file":"@./main_content.txt"}, {"path":{"folder":"fragment_1", "file":"illustration.png"}, "type":"img", "file":"@./illustration.png"}], "description":"une description","miniature":"./illus.svg", "title":"un titre"}}'
+curl 162.19.66.30:5000/fragment -H 'Content-Type: application/json' -d '{"fragment":{"content":[{"path":"fragment_8/easyrider.mp4", "type":"video"}], "description":"Un personnage enigmatique traverse le désert dans la tempête sur son rider.","miniature":"fragment_8/easyrider.png", "title":"Easyrider"}}'
 
 curl 162.19.66.30:5000/register -H 'Content-Type: application/json' -d '{"user":{"pseudo":"Squalli", "email":"test@test.com", "password":"mypass"}}'
 ```
-
-
+``` bash
+curl 162.19.66.30:5000/fragment -H 'Content-Type: application/json' -d '{"fragment":{"content":[{"path":{"folder":"fragment_17", "file":"ecclemosie.docx"}}, "type":"text", "file":"@./ecclemosie.docx"]}, "description":"Hautbrave se retrouve au milieu d\'événements chaotiques sur une planète lointaine", "miniature":"fragment_17/ecclemosie.png", "titre": "Ecclemosie"}}'
+```

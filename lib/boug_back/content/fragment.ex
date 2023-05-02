@@ -3,7 +3,7 @@ defmodule BougBack.Content.Fragment do
   import Ecto.Changeset
 
   schema "fragments" do
-    field :content, {:array, :map}
+    field :content, {:array, :map} # [{"path":"fragment_1/file.ext", "type":"ext"}]
     field :description, :string
     field :miniature, :string
     field :title, :string
