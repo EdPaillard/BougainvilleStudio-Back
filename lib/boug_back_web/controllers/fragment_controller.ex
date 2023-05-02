@@ -33,7 +33,7 @@ defmodule BougBackWeb.FragmentController do
     fragment = Content.get_fragment!(id)
     content = Enum.map(fragment["content"], fn element -> Webdav.download_file(element["path"]) end)
     full_frag = Map.put(fragment, :file, content)
-    render(conn, "show.json", fragment: full_frag)
+    render(conn, "full_fragment.json", fragment: full_frag)
   end
 
   def update(conn, %{"id" => id, "fragment" => fragment_params}) do

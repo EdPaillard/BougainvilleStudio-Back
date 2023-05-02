@@ -3,7 +3,7 @@ defmodule BougBackWeb.FragmentView do
   alias BougBackWeb.FragmentView
 
   def render("index.json", %{fragments: fragments}) do
-    %{data: render_many(fragments, FragmentView, "fragment.json")}
+    %{data: render_many(fragments, FragmentView, "full_fragment.json")}
   end
 
   def render("show.json", %{fragment: fragment}) do
@@ -11,6 +11,16 @@ defmodule BougBackWeb.FragmentView do
   end
 
   def render("fragment.json", %{fragment: fragment}) do
+    %{
+      id: fragment.id,
+      title: fragment.title,
+      description: fragment.description,
+      miniature: fragment.miniature,
+      content: fragment.content
+    }
+  end
+
+  def render("full_fragment.json", %{fragment: fragment}) do
     %{
       id: fragment.id,
       title: fragment.title,
