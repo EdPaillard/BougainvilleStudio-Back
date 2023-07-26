@@ -48,7 +48,8 @@ defmodule BougBack.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:guardian, "~> 2.3"},
       {:argon2_elixir, "~> 3.1.0"},
-      {:httpoison, "~> 2.1"}
+      {:httpoison, "~> 2.1"},
+      {:corsica, "~> 1.0"}
     ]
   end
 

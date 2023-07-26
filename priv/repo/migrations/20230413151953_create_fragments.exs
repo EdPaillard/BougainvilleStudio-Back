@@ -3,10 +3,10 @@ defmodule BougBack.Repo.Migrations.CreateFragments do
 
   def change do
     create table(:fragments) do
+      # add :types, {:array, :string}
       add :title, :string
       add :description, :string
-      add :miniature, :string
-      add :content, {:array, :map}
+      add :number, :integer
 
       timestamps()
     end

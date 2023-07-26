@@ -12,7 +12,10 @@ defmodule BougBackWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug Plug.Parsers,
+      parsers: [:urlencoded, :multipart]
     plug :fetch_session
+    plug Corsica, origins: "*"
   end
 
   pipeline :auth do
@@ -34,47 +37,65 @@ defmodule BougBackWeb.Router do
   scope "/user", BougBackWeb do
     pipe_through [:api, :auth]
     get "/refresh_session", UserController, :refresh_session
-    get "/", UserController, :list
-    get "/:user_id", UserController, :show
+    get "/", UserController, :index
+    get "/:id", UserController, :show
     get "/current", UserController, :current_user
-    put "/:user_id", UserController, :update
-    delete "/:user_id", UserController, :delete
+    put "/:id", UserController, :update
+    delete "/:id", UserController, :delete
   end
 
   scope "/fragment", BougBackWeb do
     pipe_through :api
-    get "/", FragmentController, :list
-    get "/:frag_id", FragmentController, :show
+    get "/", FragmentController, :index
+    get "/sample", FragmentController, :sample_two_last_frags
+    get "/meta/:id", FragmentController, :meta
+    get "/:id", FragmentController, :show
     post "/", FragmentController, :create
-    put "/:frag_id", FragmentController, :update
-    delete "/:frag_id", FragmentController, :delete
+    put "/:id", FragmentController, :update
+    delete "/:id", FragmentController, :delete
+  end
+
+  scope "/content", BougBackWeb do
+    pipe_through :api
+    get "/", ContentsController, :index
+    get "/:id", ContentsController, :show
+    post "/", ContentsController, :create
+    delete "/:id", ContentsController, :delete
+  end
+
+  scope "/miniature", BougBackWeb do
+    pipe_through :api
+    get "/", MiniatureController, :index
+    get "/:id", MiniatureController, :show
+    post "/", MiniatureController, :create
+    delete "/:id", MiniatureController, :delete
   end
 
   scope "/heroe", BougBackWeb do
     pipe_through [:api, :auth]
-    get "/", HeroeController, :list
-    get "/:heroe_id", HeroeController, :show
+    get "/", HeroeController, :index
+    get "/:id", HeroeController, :show
     post "/", HeroeController, :create
-    put "/:heroe_id", HeroeController, :update
-    delete "/:heroe_id", HeroeController, :delete
+    put "/:id", HeroeController, :update
+    delete "/:id", HeroeController, :delete
   end
 
   scope "/timeline", BougBackWeb do
     pipe_through [:api, :auth]
-    get "/", TimelineController, :list
-    get "/:timeline_id", TimelineController, :show
+    get "/", TimelineController, :index
+    get "/:id", TimelineController, :show
     post "/", TimelineController, :create
-    put "/:timeline_id", TimelineController, :update
-    delete "/:timeline_id", TimelineController, :delete
+    put "/:id", TimelineController, :update
+    delete "/:id", TimelineController, :delete
   end
 
   scope "/trophee", BougBackWeb do
     pipe_through [:api, :auth]
-    get "/", TropheeController, :list
-    get "/:trophee_id", TropheeController, :show
+    get "/", TropheeController, :index
+    get "/:id", TropheeController, :show
     post "/", TropheeController, :create
-    put "/:trophee_id", TropheeController, :update
-    delete "/:trophee_id", TropheeController, :delete
+    put "/:id", TropheeController, :update
+    delete "/:id", TropheeController, :delete
   end
 
   # Enables LiveDashboard only for development

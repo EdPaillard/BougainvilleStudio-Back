@@ -4,6 +4,8 @@ defmodule BougBack.Accounts.User do
 
   alias Argon2
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
   @derive {Jason.Encoder, only: [:email, :pseudo, :id]}
   schema "users" do
     field :about, :string

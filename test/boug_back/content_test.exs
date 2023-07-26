@@ -180,4 +180,112 @@ defmodule BougBack.ContentTest do
       assert %Ecto.Changeset{} = Content.change_timeline(timeline)
     end
   end
+
+  describe "contents" do
+    alias BougBack.Content.Contents
+
+    import BougBack.ContentFixtures
+
+    @invalid_attrs %{body: nil}
+
+    test "list_contents/0 returns all contents" do
+      contents = contents_fixture()
+      assert Content.list_contents() == [contents]
+    end
+
+    test "get_contents!/1 returns the contents with given id" do
+      contents = contents_fixture()
+      assert Content.get_contents!(contents.id) == contents
+    end
+
+    test "create_contents/1 with valid data creates a contents" do
+      valid_attrs = %{body: "some body"}
+
+      assert {:ok, %Contents{} = contents} = Content.create_contents(valid_attrs)
+      assert contents.body == "some body"
+    end
+
+    test "create_contents/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Content.create_contents(@invalid_attrs)
+    end
+
+    test "update_contents/2 with valid data updates the contents" do
+      contents = contents_fixture()
+      update_attrs = %{body: "some updated body"}
+
+      assert {:ok, %Contents{} = contents} = Content.update_contents(contents, update_attrs)
+      assert contents.body == "some updated body"
+    end
+
+    test "update_contents/2 with invalid data returns error changeset" do
+      contents = contents_fixture()
+      assert {:error, %Ecto.Changeset{}} = Content.update_contents(contents, @invalid_attrs)
+      assert contents == Content.get_contents!(contents.id)
+    end
+
+    test "delete_contents/1 deletes the contents" do
+      contents = contents_fixture()
+      assert {:ok, %Contents{}} = Content.delete_contents(contents)
+      assert_raise Ecto.NoResultsError, fn -> Content.get_contents!(contents.id) end
+    end
+
+    test "change_contents/1 returns a contents changeset" do
+      contents = contents_fixture()
+      assert %Ecto.Changeset{} = Content.change_contents(contents)
+    end
+  end
+
+  describe "miniaturess" do
+    alias BougBack.Content.Miniature
+
+    import BougBack.ContentFixtures
+
+    @invalid_attrs %{mini: nil}
+
+    test "list_miniaturess/0 returns all miniaturess" do
+      miniature = miniature_fixture()
+      assert Content.list_miniaturess() == [miniature]
+    end
+
+    test "get_miniature!/1 returns the miniature with given id" do
+      miniature = miniature_fixture()
+      assert Content.get_miniature!(miniature.id) == miniature
+    end
+
+    test "create_miniature/1 with valid data creates a miniature" do
+      valid_attrs = %{mini: "some mini"}
+
+      assert {:ok, %Miniature{} = miniature} = Content.create_miniature(valid_attrs)
+      assert miniature.mini == "some mini"
+    end
+
+    test "create_miniature/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Content.create_miniature(@invalid_attrs)
+    end
+
+    test "update_miniature/2 with valid data updates the miniature" do
+      miniature = miniature_fixture()
+      update_attrs = %{mini: "some updated mini"}
+
+      assert {:ok, %Miniature{} = miniature} = Content.update_miniature(miniature, update_attrs)
+      assert miniature.mini == "some updated mini"
+    end
+
+    test "update_miniature/2 with invalid data returns error changeset" do
+      miniature = miniature_fixture()
+      assert {:error, %Ecto.Changeset{}} = Content.update_miniature(miniature, @invalid_attrs)
+      assert miniature == Content.get_miniature!(miniature.id)
+    end
+
+    test "delete_miniature/1 deletes the miniature" do
+      miniature = miniature_fixture()
+      assert {:ok, %Miniature{}} = Content.delete_miniature(miniature)
+      assert_raise Ecto.NoResultsError, fn -> Content.get_miniature!(miniature.id) end
+    end
+
+    test "change_miniature/1 returns a miniature changeset" do
+      miniature = miniature_fixture()
+      assert %Ecto.Changeset{} = Content.change_miniature(miniature)
+    end
+  end
 end

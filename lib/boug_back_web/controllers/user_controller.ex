@@ -62,7 +62,7 @@ defmodule BougBackWeb.UserController do
     |> render("user_token.json", %{user: user, token: nil})
   end
 
-  def show(conn, %{"user_id" => id}) do
+  def show(conn, %{"id" => id}) do
     user = Accounts.get_full_user(id)
     render(conn, "full_user.json", user: user)
   end

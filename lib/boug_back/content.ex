@@ -7,6 +7,10 @@ defmodule BougBack.Content do
   alias BougBack.Repo
 
   alias BougBack.Content.Fragment
+  alias BougBack.Content.Heroe
+  alias BougBack.Content.Timeline
+  alias BougBack.Content.Contents
+  alias BougBack.Content.Miniature
 
   @doc """
   Returns the list of fragments.
@@ -35,7 +39,47 @@ defmodule BougBack.Content do
       ** (Ecto.NoResultsError)
 
   """
-  def get_fragment!(id), do: Repo.get!(Fragment, id)
+  def get_fragment!(id) do
+    frag = Repo.get!(Fragment, id)
+    # |> Repo.preload([:contents, :miniature])
+
+    frag
+  end #, do: Repo.get!(Fragment, id)
+
+  @spec get_sample_two_last_frags :: any
+  @doc """
+  Gets a sample of the two last fragments (title, id, type, miniature)
+
+  ## Examples
+
+      iex> get_sample_two_last_frags()
+          %Fragment{}
+
+      iex> get_sample_two_last_frags()
+      ** (Ecto.NoResultsError)
+  """
+  def get_sample_two_last_frags do
+    query = from(f in Fragment,
+             order_by: [desc: f.id],
+            #  select: %{title: f.title, id: f.id},
+             limit: 2)
+
+    result = Repo.all(query)
+    |> Repo.preload([miniature: from(m in Miniature, select: %{id: m.id}), contents: from(c in Contents, select: %{id: c.id, type: c.type})])
+
+    result
+  end
+
+  def get_sample_frags do
+    # query = from(f in Fragment, select: %{title: f.title, id: f.id})
+    query = from(f in Fragment, order_by: :number)
+    Repo.all(query)
+    |> Repo.preload([miniature: from(m in Miniature, select: %{id: m.id}), contents: from(c in Contents, select: %{id: c.id, type: c.type})])
+  end
+
+  def meta(id) do
+    Repo.one(from f in Fragment, where: f.id == ^id, select: %{id: f.id, title: f.title, description: f.description, number: f.number})
+  end
 
   @doc """
   Creates a fragment.
@@ -101,8 +145,6 @@ defmodule BougBack.Content do
   def change_fragment(%Fragment{} = fragment, attrs \\ %{}) do
     Fragment.changeset(fragment, attrs)
   end
-
-  alias BougBack.Content.Heroe
 
   @doc """
   Returns the list of heroes.
@@ -198,8 +240,6 @@ defmodule BougBack.Content do
     Heroe.changeset(heroe, attrs)
   end
 
-  alias BougBack.Content.Timeline
-
   @doc """
   Returns the list of timelines.
 
@@ -292,5 +332,197 @@ defmodule BougBack.Content do
   """
   def change_timeline(%Timeline{} = timeline, attrs \\ %{}) do
     Timeline.changeset(timeline, attrs)
+  end
+
+  @doc """
+  Returns the list of contents.
+
+  ## Examples
+
+      iex> list_contents()
+      [%Contents{}, ...]
+
+  """
+  def list_contents do
+    Repo.all(Contents)
+  end
+
+  @doc """
+  Gets a single contents.
+
+  Raises `Ecto.NoResultsError` if the Contents does not exist.
+
+  ## Examples
+
+      iex> get_contents!(123)
+      %Contents{}
+
+      iex> get_contents!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_contents!(id), do: Repo.get!(Contents, id)
+
+  @doc """
+  Creates a contents.
+
+  ## Examples
+
+      iex> create_contents(%{field: value})
+      {:ok, %Contents{}}
+
+      iex> create_contents(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_contents(attrs \\ %{}) do
+    %Contents{}
+    |> Contents.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a contents.
+
+  ## Examples
+
+      iex> update_contents(contents, %{field: new_value})
+      {:ok, %Contents{}}
+
+      iex> update_contents(contents, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_contents(%Contents{} = contents, attrs) do
+    contents
+    |> Contents.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a contents.
+
+  ## Examples
+
+      iex> delete_contents(contents)
+      {:ok, %Contents{}}
+
+      iex> delete_contents(contents)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_contents(%Contents{} = contents) do
+    Repo.delete(contents)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking contents changes.
+
+  ## Examples
+
+      iex> change_contents(contents)
+      %Ecto.Changeset{data: %Contents{}}
+
+  """
+  def change_contents(%Contents{} = contents, attrs \\ %{}) do
+    Contents.changeset(contents, attrs)
+  end
+
+  @doc """
+  Returns the list of miniatures.
+
+  ## Examples
+
+      iex> list_miniatures()
+      [%Miniature{}, ...]
+
+  """
+  # def list_miniatures() do
+  #   Repo.all(Miniature)
+  # end
+
+  def list_miniatures do
+    Repo.all(Miniature)
+  end
+
+  @doc """
+  Gets a single miniature.
+
+  Raises `Ecto.NoResultsError` if the Miniature does not exist.
+
+  ## Examples
+
+      iex> get_miniature!(123)
+      %Miniature{}
+
+      iex> get_miniature!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_miniature!(id), do: Repo.get!(Miniature, id)
+
+  @doc """
+  Creates a miniature.
+
+  ## Examples
+
+      iex> create_miniature(%{field: value})
+      {:ok, %Miniature{}}
+
+      iex> create_miniature(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_miniature(attrs \\ %{}) do
+    %Miniature{}
+    |> Miniature.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a miniature.
+
+  ## Examples
+
+      iex> update_miniature(miniature, %{field: new_value})
+      {:ok, %Miniature{}}
+
+      iex> update_miniature(miniature, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_miniature(%Miniature{} = miniature, attrs) do
+    miniature
+    |> Miniature.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a miniature.
+
+  ## Examples
+
+      iex> delete_miniature(miniature)
+      {:ok, %Miniature{}}
+
+      iex> delete_miniature(miniature)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_miniature(%Miniature{} = miniature) do
+    Repo.delete(miniature)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking miniature changes.
+
+  ## Examples
+
+      iex> change_miniature(miniature)
+      %Ecto.Changeset{data: %Miniature{}}
+
+  """
+  def change_miniature(%Miniature{} = miniature, attrs \\ %{}) do
+    Miniature.changeset(miniature, attrs)
   end
 end

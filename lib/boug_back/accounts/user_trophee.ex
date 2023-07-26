@@ -3,6 +3,7 @@ defmodule BougBack.Accounts.UserTrophee do
   import Ecto.Changeset
 
   @primary_key false
+  @foreign_key_type :binary_id
   @derive {Jason.Encoder, except: [:__meta__]}
   schema "user_trophees" do
 

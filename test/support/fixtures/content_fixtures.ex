@@ -53,4 +53,32 @@ defmodule BougBack.ContentFixtures do
 
     timeline
   end
+
+  @doc """
+  Generate a contents.
+  """
+  def contents_fixture(attrs \\ %{}) do
+    {:ok, contents} =
+      attrs
+      |> Enum.into(%{
+        body: "some body"
+      })
+      |> BougBack.Content.create_contents()
+
+    contents
+  end
+
+  @doc """
+  Generate a miniature.
+  """
+  def miniature_fixture(attrs \\ %{}) do
+    {:ok, miniature} =
+      attrs
+      |> Enum.into(%{
+        mini: "some mini"
+      })
+      |> BougBack.Content.create_miniature()
+
+    miniature
+  end
 end

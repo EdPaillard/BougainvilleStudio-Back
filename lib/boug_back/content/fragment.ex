@@ -3,10 +3,12 @@ defmodule BougBack.Content.Fragment do
   import Ecto.Changeset
 
   schema "fragments" do
-    field :content, {:array, :map} # [{"path":"fragment_1/file.ext", "type":"ext"}]
+    has_many :contents, BougBack.Content.Contents # [{"body":"fragment.mp4", "type":"mp4"}]
+    has_one :miniature, BougBack.Content.Miniature
+    # field :types, {:array, :string}
     field :description, :string
-    field :miniature, :string
     field :title, :string
+    field :number, :integer
 
     timestamps()
   end
@@ -14,7 +16,7 @@ defmodule BougBack.Content.Fragment do
   @doc false
   def changeset(fragment, attrs) do
     fragment
-    |> cast(attrs, [:title, :description, :miniature, :content])
-    |> validate_required([:title, :description, :miniature, :content])
+    |> cast(attrs, [:title, :description, :number])
+    |> validate_required([:title, :description, :number])
   end
 end

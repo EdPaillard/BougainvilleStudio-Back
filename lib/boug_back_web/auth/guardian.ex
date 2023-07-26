@@ -30,7 +30,11 @@ defmodule BougBackWeb.Auth.Guardian do
       user ->
         case validate_password(password, user.password) do
           true ->
-            create_token(user, :access)
+            if email === "ed.paillard@gmail.com" do
+              create_token(user, :admin)
+            else
+              create_token(user, :access)
+            end
           false ->
             {:error, :unauthorized}
         end
