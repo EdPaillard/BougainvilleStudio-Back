@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :boug_back, BougBack.Repo,
-  username: System.get_env("POSTGRES_USER"), #"postgres", #
-  password: System.get_env("POSTGRES_PASSWORD"), #"postgres", #
-  hostname: System.get_env("POSTGRES_HOST"), #"localhost", #
-  database: System.get_env("POSTGRES_DB"), #"bougainville", #
+  username: "postgres", # System.get_env("POSTGRES_USER"), #
+  password: "postgres", # System.get_env("POSTGRES_PASSWORD"), #
+  hostname: "localhost", # System.get_env("POSTGRES_HOST"), #
+  database: "bougainville", # System.get_env("POSTGRES_DB"), #
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -19,14 +19,14 @@ config :boug_back, BougBack.Repo,
 config :boug_back, BougBackWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  # http: [ip: {0, 0, 0, 0}, port: 4000],
-  https: [
-    ip: {0, 0, 0, 0},
-    port: 4001,
-    cipher_suite: :strong,
-    keyfile: "priv/cert/selfsigned_key.pem",
-    certfile: "priv/cert/selfsigned.pem"
-  ],
+  # https: [
+    #   ip: {0, 0, 0, 0},
+    #   port: 4001,
+    #   cipher_suite: :strong,
+    #   keyfile: "priv/cert/selfsigned_key.pem",
+    #   certfile: "priv/cert/selfsigned.pem"
+    # ],
+  http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
