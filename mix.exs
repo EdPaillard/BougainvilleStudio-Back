@@ -49,7 +49,8 @@ defmodule BougBack.MixProject do
       {:guardian, "~> 2.3"},
       {:argon2_elixir, "~> 3.1.0"},
       {:httpoison, "~> 2.1"},
-      {:corsica, "~> 1.0"}
+      {:corsica, "~> 1.0"},
+      {:image, "~> 0.36.2"}
     ]
   end
 

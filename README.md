@@ -28,3 +28,5 @@ curl 162.19.66.30:5000/register -H 'Content-Type: application/json' -d '{"user":
 ``` bash
 curl 162.19.66.30:5000/fragment -H 'Content-Type: application/json' -d '{"fragment":{"content":[{"path":{"folder":"fragment_17", "file":"ecclemosie.docx"}}, "type":"text", "file":"@./ecclemosie.docx"]}, "description":"Hautbrave se retrouve au milieu d\'événements chaotiques sur une planète lointaine", "miniature":"fragment_17/ecclemosie.png", "titre": "Ecclemosie"}}'
 ```
+
+localhost:4000/miniature -H 'Content-Type: multipart/form-data' -F "miniature=@hb_darkness.png" -F "id=5"

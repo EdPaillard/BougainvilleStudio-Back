@@ -68,6 +68,7 @@ defmodule BougBackWeb.Router do
     get "/", MiniatureController, :index
     get "/:id", MiniatureController, :show
     post "/", MiniatureController, :create
+    post "/test", MiniatureController, :test
     delete "/:id", MiniatureController, :delete
   end
 
