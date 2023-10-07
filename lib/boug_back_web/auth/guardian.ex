@@ -30,7 +30,7 @@ defmodule BougBackWeb.Auth.Guardian do
       user ->
         case validate_password(password, user.password) do
           true ->
-            if email === "ed.paillard@gmail.com" do
+            if user.role.admin do
               create_token(user, :admin)
             else
               create_token(user, :access)
@@ -62,8 +62,8 @@ defmodule BougBackWeb.Auth.Guardian do
   defp token_option(type) do
     case type do
       :access -> [token_type: "access", ttl: {2, :hour}]
-      :reset -> [token_type: "reset", ttl: {15, :minute}]
       :admin -> [token_type: "admin", ttl: {1, :day}]
+      # :reset -> [token_type: "reset", ttl: {15, :minute}]
     end
   end
 end

@@ -7,15 +7,19 @@ defmodule BougBackWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_boug_back_key",
-    signing_salt: "zHSm3kQ3"
+    signing_salt: "zHSm3kQ3",
+    secure: false,
+    same_site: "Lax",
+    max_age: 31536000
   ]
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  # socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phx.digest
   # when deploying your static files in production.
+  plug Corsica, origins: "*", allow_headers: :all, allow_methods: :all, allow_credentials: true
   plug Plug.Static,
     at: "/",
     from: :boug_back,

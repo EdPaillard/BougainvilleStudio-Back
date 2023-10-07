@@ -11,11 +11,12 @@ defmodule BougBackWeb.Auth.SetUser do
     if conn.assigns[:user] do
       conn
     else
+      IO.inspect(item: conn, label: "SETUSER CONN")
       user_id = get_session(conn, :user_id)
 
       if user_id == nil, do: raise ErrorResponse.Unauthorized
 
-      user = Accounts.get_user!(user_id)
+      user = Accounts.get_full_user(user_id)
       cond do
         user_id && user -> assign(conn, :user, user)
         true -> assign(conn, :user, nil)

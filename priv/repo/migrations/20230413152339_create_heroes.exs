@@ -8,7 +8,7 @@ defmodule BougBack.Repo.Migrations.CreateHeroes do
       add :pnj_sentence, :string
       add :options, {:map, :string}
       add :save_scene, :integer
-      add :user_id, references(:users, on_delete: :nothing)
+      add :user_id, references(:users, type: :binary_id, on_delete: :nothing)
 
       timestamps()
     end

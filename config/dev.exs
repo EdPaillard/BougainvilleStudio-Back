@@ -3,9 +3,9 @@ import Config
 # Configure your database
 config :boug_back, BougBack.Repo,
   username: "postgres", # System.get_env("POSTGRES_USER"), #
-  password: "postgres", # System.get_env("POSTGRES_PASSWORD"), #
-  hostname: "localhost", # System.get_env("POSTGRES_HOST"), #
-  database: "bougainville", # System.get_env("POSTGRES_DB"), #
+  password: "postgres", #System.get_env("POSTGRES_PASSWORD"), #
+  hostname: "localhost", #System.get_env("POSTGRES_HOST"), #
+  database: "bougainville", #System.get_env("POSTGRES_DB"), #
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -30,7 +30,7 @@ config :boug_back, BougBackWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "D0H+N1SJRcaAKMP3eoqxAIRtLDOTFOZ5vovC77uKns4IuVBBauzMAIp0L/SAqk5Z",
+  secret_key_base: System.get_env("REACT_APP_SECRET_KEY"),
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}

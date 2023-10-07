@@ -5,45 +5,48 @@ defmodule BougBackWeb.MiniatureController do
   alias BougBack.Content
   alias BougBack.Content.Miniature
 
+  alias BougBackWeb.Auth.ErrorResponse
+
+  plug :is_authorized_account when action in [:create, :update, :delete]
+
   action_fallback BougBackWeb.FallbackController
+
+  defp is_authorized_account(conn, _opts) do
+    if conn.assigns.user.role.admin do
+      conn
+    else
+      raise ErrorResponse.Forbidden
+    end
+  end
 
   def index(conn, _params) do
     miniatures = Content.list_miniatures()
     render(conn, "index.json", miniatures: miniatures)
   end
 
-  def test(conn, %{"miniature" => miniature}) do
-    if(File.exists?(miniature.path)) do
-      case File.read(miniature.path) do
-        {:ok, _} -> {:ok, vix_image} = Vix.Vips.Image.new_from_file(miniature.path)
-          IO.inspect(vix_image)
-          IO.inspect(Image.BandFormat.known_band_formats)
-          IO.inspect(Vix.Vips.Image.height(vix_image))
-          IO.inspect(Vix.Vips.Image.width(vix_image))
-          IO.inspect(Vix.Vips.Image.format(vix_image))
-          Image.dominant_color()
-          rgb = Image.dominant_color(vix_image)
-          IO.inspect(rgb)
-          new_rgb = Enum.map(rgb, fn el -> 255 - el end)
-          conn
-          |> put_status(:ok)
-          |> json(%{dom: rgb, new: new_rgb})
-        {:error, posix} -> IO.inspect(item: posix, label: "Posix Error")
-      end
-    end
-  end
-
   def create(conn, %{"miniature" => miniature, "id" => id}) do
     if(File.exists?(miniature.path)) do
       case File.read(miniature.path) do
-        {:ok, body} -> data = IO.iodata_to_binary(body)
-        miniature_params = %{"mini" => data, "fragment_id" => id}
-        with {:ok, _miniature} <- Content.create_miniature(miniature_params) do
+        {:ok, body} ->
+          data = IO.iodata_to_binary(body)
+          case Vix.Vips.Image.new_from_file(miniature.path) do
+            {:ok, vix_image} ->
+              rgb = Image.dominant_color(vix_image[0..2])
+              new_rgb = Enum.map(rgb, fn el -> 255 - el end)
+              miniature_params = %{"mini" => data, "bg_color" => new_rgb, "fragment_id" => id}
+              with {:ok, _miniature} <- Content.create_miniature(miniature_params) do
+                conn
+                |> put_status(:created)
+                |> json(%{success: "Miniature created successfuly"})
+              end
+            {:error, error} ->
+              conn
+              |> put_status(400)
+              |> json(%{err: error})
+          end
+        {:error, posix} ->
           conn
-          |> put_status(:created)
-          |> json(%{success: "Miniature created successfuly"})
-        end
-        {:error, posix} -> IO.inspect(item: posix, label: "Posix Error")
+          |> json(%{error: "Error reading the profil pic #{posix}"})
       end
     end
   end

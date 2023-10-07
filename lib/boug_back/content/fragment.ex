@@ -3,12 +3,13 @@ defmodule BougBack.Content.Fragment do
   import Ecto.Changeset
 
   schema "fragments" do
-    has_many :contents, BougBack.Content.Contents # [{"body":"fragment.mp4", "type":"mp4"}]
+    has_many :contents, BougBack.Content.Contents
     has_one :miniature, BougBack.Content.Miniature
-    # field :types, {:array, :string}
     field :description, :string
     field :title, :string
     field :number, :integer
+    many_to_many :timelines, BougBack.Content.Timeline, join_through: BougBack.Content.FragTimeline
+
 
     timestamps()
   end

@@ -13,7 +13,8 @@ defmodule BougBackWeb.MiniatureView do
   def render("miniature.json", %{miniature: miniature}) do
     %{
       id: miniature.id,
-      mini: miniature.mini
+      mini: miniature.mini,
+      bg_color: miniature.bg_color
     }
   end
 end

@@ -65,7 +65,7 @@ defmodule BougBack.Content do
              limit: 2)
 
     result = Repo.all(query)
-    |> Repo.preload([miniature: from(m in Miniature, select: %{id: m.id}), contents: from(c in Contents, select: %{id: c.id, type: c.type})])
+    |> Repo.preload([miniature: from(m in Miniature, select: %{id: m.id, bg_color: m.bg_color}), contents: from(c in Contents, select: %{id: c.id, type: c.type})])
 
     result
   end
@@ -74,7 +74,7 @@ defmodule BougBack.Content do
     # query = from(f in Fragment, select: %{title: f.title, id: f.id})
     query = from(f in Fragment, order_by: :number)
     Repo.all(query)
-    |> Repo.preload([miniature: from(m in Miniature, select: %{id: m.id}), contents: from(c in Contents, select: %{id: c.id, type: c.type})])
+    |> Repo.preload([miniature: from(m in Miniature, select: %{id: m.id, bg_color: m.bg_color}), contents: from(c in Contents, select: %{id: c.id, type: c.type})])
   end
 
   def meta(id) do

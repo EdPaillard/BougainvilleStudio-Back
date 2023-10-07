@@ -3,7 +3,19 @@ defmodule BougBackWeb.FragmentController do
 
   alias BougBack.{Content, Content.Fragment}
 
+  alias BougBackWeb.Auth.ErrorResponse
+
+  plug :is_authorized_account when action in [:create, :update, :delete]
+
   action_fallback BougBackWeb.FallbackController
+
+  defp is_authorized_account(conn, _opts) do
+    if conn.assigns.user.role.admin do
+      conn
+    else
+      raise ErrorResponse.Forbidden
+    end
+  end
 
   def index(conn, _params) do
     fragments = Content.get_sample_frags()
@@ -24,15 +36,7 @@ defmodule BougBackWeb.FragmentController do
     end
   end
 
-  # def add_medias(conn, %{"file" => content}) do
-  #   IO.inspect(item: content, label: "Content")
-  #   IO.inspect(item: content1, label: "Content1")
-  #   IO.inspect(item: content2, label: "Content2")
-  #   IO.inspect(item: mini, label: "MINIATURE")
-  # end
-
   # defp build_content(content1, content2, content3, params) do
-  #   IO.inspect("BUILD CONTENT")
   #   case [content1, content2, content3] do
   #     [_, nil, nil] ->
   #       Map.put(params, "content", List.update_at(params["content"], 0, fn el -> Map.put(el, "body", content1) end))
@@ -47,13 +51,9 @@ defmodule BougBackWeb.FragmentController do
     fragment = Content.get_fragment!(id)
     render(conn, "show.json", fragment: fragment)
     # fragment = Content.get_fragment!(id)
-    # IO.inspect(item: fragment, label: "FRAGMENT")
     # map_fragment = Map.from_struct(fragment)
-    # IO.inspect(item: map_fragment, label: "MAP_FRAGMENT")
     # content = Enum.map(map_fragment[:content], fn element -> Webdav.download_file(element["path"]) end)
     # miniature = Webdav.download_file(map_fragment[:miniature])
-    # IO.inspect(item: Enum.any?(content, fn element -> is_tuple(element) end), label: "ISTUPLE ?")
-    # IO.inspect(item: content, label: "CONTENT")
     # if Enum.any?(content, fn element -> is_tuple(element) end) do
     #   error = Enum.at(content, 0)
     #   conn

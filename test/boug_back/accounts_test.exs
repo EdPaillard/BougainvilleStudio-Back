@@ -128,4 +128,60 @@ defmodule BougBack.AccountsTest do
       assert %Ecto.Changeset{} = Accounts.change_trophee(trophee)
     end
   end
+
+  describe "roles" do
+    alias BougBack.Accounts.Role
+
+    import BougBack.AccountsFixtures
+
+    @invalid_attrs %{admin: nil, moderator: nil}
+
+    test "list_roles/0 returns all roles" do
+      role = role_fixture()
+      assert Accounts.list_roles() == [role]
+    end
+
+    test "get_role!/1 returns the role with given id" do
+      role = role_fixture()
+      assert Accounts.get_role!(role.id) == role
+    end
+
+    test "create_role/1 with valid data creates a role" do
+      valid_attrs = %{admin: true, moderator: true}
+
+      assert {:ok, %Role{} = role} = Accounts.create_role(valid_attrs)
+      assert role.admin == true
+      assert role.moderator == true
+    end
+
+    test "create_role/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_role(@invalid_attrs)
+    end
+
+    test "update_role/2 with valid data updates the role" do
+      role = role_fixture()
+      update_attrs = %{admin: false, moderator: false}
+
+      assert {:ok, %Role{} = role} = Accounts.update_role(role, update_attrs)
+      assert role.admin == false
+      assert role.moderator == false
+    end
+
+    test "update_role/2 with invalid data returns error changeset" do
+      role = role_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_role(role, @invalid_attrs)
+      assert role == Accounts.get_role!(role.id)
+    end
+
+    test "delete_role/1 deletes the role" do
+      role = role_fixture()
+      assert {:ok, %Role{}} = Accounts.delete_role(role)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_role!(role.id) end
+    end
+
+    test "change_role/1 returns a role changeset" do
+      role = role_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_role(role)
+    end
+  end
 end

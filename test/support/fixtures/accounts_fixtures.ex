@@ -25,7 +25,7 @@ defmodule BougBack.AccountsFixtures do
   end
 
   @doc """
-  Generate a trophee.
+  Generate a trophy.
   """
   def trophee_fixture(attrs \\ %{}) do
     {:ok, trophee} =
@@ -36,8 +36,23 @@ defmodule BougBack.AccountsFixtures do
         picture: "some picture",
         resume: "some resume"
       })
-      |> BougBack.Accounts.create_trophee()
+      |> BougBack.Accounts.create_trophy()
 
     trophee
+  end
+
+  @doc """
+  Generate a role.
+  """
+  def role_fixture(attrs \\ %{}) do
+    {:ok, role} =
+      attrs
+      |> Enum.into(%{
+        admin: true,
+        moderator: true
+      })
+      |> BougBack.Accounts.create_role()
+
+    role
   end
 end

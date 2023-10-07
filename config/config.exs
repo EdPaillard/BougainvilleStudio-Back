@@ -8,7 +8,8 @@
 import Config
 
 config :boug_back,
-  ecto_repos: [BougBack.Repo]
+  ecto_repos: [BougBack.Repo],
+  generators: [binary_id: true]
 
 # Configures the endpoint
 config :boug_back, BougBackWeb.Endpoint,
@@ -19,7 +20,7 @@ config :boug_back, BougBackWeb.Endpoint,
 
 config :boug_back, BougBackWeb.Auth.Guardian,
   issuer: "boug_back",
-  secret_key: "D0H+N1SJRcaAKMP3eoqxAIRtLDOTFOZ5vovC77uKns4IuVBBauzMAIp0L/SAqk5Z"
+  secret_key: System.get_env("REACT_APP_SECRET_KEY") #"D0H+N1SJRcaAKMP3eoqxAIRtLDOTFOZ5vovC77uKns4IuVBBauzMAIp0L/SAqk5Z" #  System.get_env("SECRET_KEY")
 
 # Configures the mailer
 #

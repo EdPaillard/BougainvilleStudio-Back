@@ -4,6 +4,8 @@ defmodule BougBack.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias BougBack.Accounts
+  alias BougBack.Accounts.Trophy
   alias BougBack.Repo
 
   alias BougBack.Accounts.User
@@ -36,14 +38,38 @@ defmodule BougBack.Accounts do
 
   """
   def get_user!(id) do
-    Repo.get!(User, id)
+    User
+    |> where(id: ^id)
+    |> preload([:role])
+    |> Repo.one()
+  end
+
+  def get_session_user(id) do
+    Repo.one(from u in User, where: u.id == ^id, select: %{id: u.id, email: u.email, pseudo: u.pseudo})
   end
 
   def get_full_user(id) do
     User
     |> where(id: ^id)
-    |> preload([:trophees, :timelines, :heroe])
+    |> preload([:trophies, :timeline, :heroe, :role])
     |> Repo.one()
+  end
+
+  def upsert_user_trophy(user, trophy_id) do
+    trophies =
+      Trophy
+      |> where(id: ^trophy_id)
+      |> Repo.one()
+
+    with {:ok, _struct} <-
+        user
+        |> User.changeset_update_trophies(trophies)
+        |> Repo.update() do
+      {:ok, Accounts.get_user!(user.id)}
+    else
+      error ->
+        error
+    end
   end
   @doc """
   Gets a single user.any()
@@ -62,6 +88,7 @@ defmodule BougBack.Accounts do
   def get_user_by_email(email) do
     User
     |> where(email: ^email)
+    |> preload([:trophies, :timeline, :heroe, :role])
     |> Repo.one()
   end
 
@@ -111,10 +138,16 @@ defmodule BougBack.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user(%User{} = user, attrs) do
+  def update_user(user, attrs) do
+    IO.inspect(item: user, label: "UPDATE USER")
+    IO.inspect(item: attrs, label: "UPDATE ATTRS")
     user
-    |> User.changeset(attrs)
+    |> User.update_user(attrs)
     |> Repo.update()
+  end
+
+  def get_profil_pic(id) do
+    Repo.one(from u in User, where: u.id == ^id, select: %{profil_img: u.profil_img})
   end
 
   @doc """
@@ -146,99 +179,195 @@ defmodule BougBack.Accounts do
     User.changeset(user, attrs)
   end
 
-  alias BougBack.Accounts.Trophee
+  alias BougBack.Accounts.Trophy
 
   @doc """
-  Returns the list of trophees.
+  Returns the list of trophies.
 
   ## Examples
 
-      iex> list_trophees()
-      [%Trophee{}, ...]
+      iex> list_trophies()
+      [%Trophy{}, ...]
 
   """
-  def list_trophees do
-    Repo.all(Trophee)
+  def list_trophies do
+    Repo.all(Trophy)
   end
 
   @doc """
-  Gets a single trophee.
+  Gets a single trophy.
 
-  Raises `Ecto.NoResultsError` if the Trophee does not exist.
+  Raises `Ecto.NoResultsError` if the Trophy does not exist.
 
   ## Examples
 
-      iex> get_trophee!(123)
-      %Trophee{}
+      iex> get_trophy!(123)
+      %Trophy{}
 
-      iex> get_trophee!(456)
+      iex> get_trophy!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_trophee!(id), do: Repo.get!(Trophee, id)
+  def get_trophy!(id), do: Repo.get!(Trophy, id)
 
   @doc """
-  Creates a trophee.
+  Creates a trophy.
 
   ## Examples
 
-      iex> create_trophee(%{field: value})
-      {:ok, %Trophee{}}
+      iex> create_trophy(%{field: value})
+      {:ok, %Trophy{}}
 
-      iex> create_trophee(%{field: bad_value})
+      iex> create_trophy(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_trophee(attrs \\ %{}) do
-    %Trophee{}
-    |> Trophee.changeset(attrs)
+  def create_trophy(attrs \\ %{}) do
+    %Trophy{}
+    |> Trophy.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a trophee.
+  Updates a trophy.
 
   ## Examples
 
-      iex> update_trophee(trophee, %{field: new_value})
-      {:ok, %Trophee{}}
+      iex> update_trophy(trophy, %{field: new_value})
+      {:ok, %Trophy{}}
 
-      iex> update_trophee(trophee, %{field: bad_value})
+      iex> update_trophy(trophy, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_trophee(%Trophee{} = trophee, attrs) do
-    trophee
-    |> Trophee.changeset(attrs)
+  def update_trophy(%Trophy{} = trophy, attrs) do
+    trophy
+    |> Trophy.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a trophee.
+  Deletes a trophy.
 
   ## Examples
 
-      iex> delete_trophee(trophee)
-      {:ok, %Trophee{}}
+      iex> delete_trophy(trophy)
+      {:ok, %Trophy{}}
 
-      iex> delete_trophee(trophee)
+      iex> delete_trophy(trophy)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_trophee(%Trophee{} = trophee) do
-    Repo.delete(trophee)
+  def delete_trophy(%Trophy{} = trophy) do
+    Repo.delete(trophy)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking trophee changes.
+  Returns an `%Ecto.Changeset{}` for tracking trophy changes.
 
   ## Examples
 
-      iex> change_trophee(trophee)
-      %Ecto.Changeset{data: %Trophee{}}
+      iex> change_trophy(trophy)
+      %Ecto.Changeset{data: %Trophy{}}
 
   """
-  def change_trophee(%Trophee{} = trophee, attrs \\ %{}) do
-    Trophee.changeset(trophee, attrs)
+  def change_trophy(%Trophy{} = trophy, attrs \\ %{}) do
+    Trophy.changeset(trophy, attrs)
+  end
+
+  alias BougBack.Accounts.Role
+
+  @doc """
+  Returns the list of roles.
+
+  ## Examples
+
+      iex> list_roles()
+      [%Role{}, ...]
+
+  """
+  def list_roles do
+    Repo.all(Role)
+  end
+
+  @doc """
+  Gets a single role.
+
+  Raises `Ecto.NoResultsError` if the Role does not exist.
+
+  ## Examples
+
+      iex> get_role!(123)
+      %Role{}
+
+      iex> get_role!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_role!(id), do: Repo.get!(Role, id)
+
+  @doc """
+  Creates a role.
+
+  ## Examples
+
+      iex> create_role(%{field: value})
+      {:ok, %Role{}}
+
+      iex> create_role(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_role(attrs \\ %{}) do
+    %Role{}
+    |> Role.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a role.
+
+  ## Examples
+
+      iex> update_role(role, %{field: new_value})
+      {:ok, %Role{}}
+
+      iex> update_role(role, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_role(%Role{} = role, attrs) do
+    role
+    |> Role.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a role.
+
+  ## Examples
+
+      iex> delete_role(role)
+      {:ok, %Role{}}
+
+      iex> delete_role(role)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_role(%Role{} = role) do
+    Repo.delete(role)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking role changes.
+
+  ## Examples
+
+      iex> change_role(role)
+      %Ecto.Changeset{data: %Role{}}
+
+  """
+  def change_role(%Role{} = role, attrs \\ %{}) do
+    Role.changeset(role, attrs)
   end
 end

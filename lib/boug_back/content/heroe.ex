@@ -8,7 +8,7 @@ defmodule BougBack.Content.Heroe do
     field :pnj_picture, :string
     field :pnj_sentence, :string
     field :save_scene, :integer
-    belongs_to :user, BougBack.Accounts.User
+    belongs_to :user, BougBack.Accounts.User, type: :binary_id
 
     timestamps()
   end

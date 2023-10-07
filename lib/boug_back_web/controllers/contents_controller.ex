@@ -4,7 +4,19 @@ defmodule BougBackWeb.ContentsController do
   alias BougBack.Content
   alias BougBack.Content.Contents
 
+  alias BougBackWeb.Auth.ErrorResponse
+
+  plug :is_authorized_account when action in [:create, :update, :delete]
+
   action_fallback BougBackWeb.FallbackController
+
+  defp is_authorized_account(conn, _opts) do
+    if conn.assigns.user.role.admin do
+      conn
+    else
+      raise ErrorResponse.Forbidden
+    end
+  end
 
   def index(conn, _params) do
     contents = Content.list_contents()
@@ -12,7 +24,6 @@ defmodule BougBackWeb.ContentsController do
   end
 
   def create(conn, %{"content" => content, "id" => id, "type" => type}) do
-    IO.inspect(content)
     if(File.exists?(content.path)) do
       case File.read(content.path) do
         {:ok, body} -> data = IO.iodata_to_binary(body)
@@ -22,14 +33,12 @@ defmodule BougBackWeb.ContentsController do
           |> put_status(:created)
           |> json(%{success: "Content created successfuly"})
         end
-        {:error, posix} -> IO.inspect(item: posix, label: "Posix Error")
+        {:error, posix} ->
+          conn
+          |> json(%{error: "Error reading the profil pic #{posix}"})
       end
     end
   end
-
-  # defp set_content_type(file_name) do
-
-  # end
 
   def show(conn, %{"id" => id}) do
     contents = Content.get_contents!(id)
@@ -38,30 +47,19 @@ defmodule BougBackWeb.ContentsController do
     data = contents.body
 
     chunk = chunk_entry(data, chunk_size)
-    IO.inspect(item: chunk, label: "CHUNK")
-    IO.inspect(item: List.last(chunk), label: "LAST CHUNK")
 
     conn = conn
     |> put_resp_content_type("video/mp4")
     |> send_chunked(200)
-    # |> put_status(200)
-    # |> json(data)
 
     Enum.reduce_while(chunk, conn, fn (el, conn) ->
       case Plug.Conn.chunk(conn, el) do
         {:ok, conn} ->
           {:cont, conn}
         {:error, :closed} ->
-          IO.inspect(item: el, label: "ERROR EL")
           {:halt, conn}
       end
     end)
-
-    # conn
-    # |> put_resp_content_type("video/mp4")
-    # |> Stream.chunk_every(200)
-    # |> Enum.map(&Base.decode64/1)
-    # |> Enum.into(conn)
   end
 
   def chunk_entry(string, size \\ 5), do: chunk(string, size, [])

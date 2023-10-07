@@ -4,7 +4,19 @@ defmodule BougBackWeb.TimelineController do
   alias BougBack.Content
   alias BougBack.Content.Timeline
 
+  alias BougBackWeb.Auth.ErrorResponse
+
+  plug :is_authorized_account when action in [:create, :update, :delete]
+
   action_fallback BougBackWeb.FallbackController
+
+  defp is_authorized_account(conn, _opts) do
+    if conn.assigns.user.role.admin do
+      conn
+    else
+      raise ErrorResponse.Forbidden
+    end
+  end
 
   def index(conn, _params) do
     timelines = Content.list_timelines()

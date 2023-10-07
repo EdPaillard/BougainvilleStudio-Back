@@ -1,6 +1,6 @@
 defmodule BougBackWeb.UserView do
   use BougBackWeb, :view
-  alias BougBackWeb.{UserView, TropheeView, TimelineView, HeroeView}
+  alias BougBackWeb.{UserView, TrophyView, TimelineView, HeroeView}
 
   def render("index.json", %{users: users}) do
     %{data: render_many(users, UserView, "user.json")}
@@ -15,9 +15,7 @@ defmodule BougBackWeb.UserView do
       id: user.id,
       pseudo: user.pseudo,
       about: user.about,
-      profil_img: user.profil_img,
       password: user.password,
-      age: user.age,
       email: user.email,
       ville: user.ville
     }
@@ -26,6 +24,18 @@ defmodule BougBackWeb.UserView do
   def render("user_token.json", %{user: user, token: token}) do
     %{
       id: user.id,
+      pseudo: user.pseudo,
+      about: user.about,
+      email: user.email,
+      ville: user.ville,
+      token: token
+    }
+  end
+
+  def render("user_session.json", %{user: user, token: token}) do
+    %{
+      id: user.id,
+      pseudo: user.pseudo,
       email: user.email,
       token: token
     }
@@ -37,12 +47,12 @@ defmodule BougBackWeb.UserView do
       pseudo: user.pseudo,
       about: user.about,
       profil_img: user.profil_img,
-      age: user.age,
       email: user.email,
       ville: user.ville,
+      role: user.role,
       heroe: render_one(user.heroe, HeroeView, "heroe.json"),
       timelines: render(user.timelines, TimelineView, "timeline.json"),
-      trophees: render(user.trophees, TropheeView, "trophee.json")
+      trophies: render(user.trophies, TrophyView, "trophy.json")
     }
   end
 end

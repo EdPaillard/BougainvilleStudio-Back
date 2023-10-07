@@ -5,6 +5,7 @@ defmodule BougBack.Content.Miniature do
   @derive {Jason.Encoder, only: [:mini]}
   schema "miniatures" do
     field :mini, :binary
+    field :bg_color, {:array, :integer}
     belongs_to :fragment, BougBack.Content.Fragment
 
     timestamps()
@@ -13,7 +14,7 @@ defmodule BougBack.Content.Miniature do
   @doc false
   def changeset(miniature, attrs) do
     miniature
-    |> cast(attrs, [:mini, :fragment_id])
-    |> validate_required([:mini, :fragment_id])
+    |> cast(attrs, [:mini, :fragment_id, :bg_color])
+    |> validate_required([:mini, :fragment_id, :bg_color])
   end
 end
