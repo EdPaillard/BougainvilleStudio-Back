@@ -2,6 +2,7 @@ defmodule BougBack.Accounts.Role do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, except: [:__meta__, :user]}
   schema "roles" do
     field :admin, :boolean, default: false
     field :moderator, :boolean, default: false

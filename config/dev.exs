@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :boug_back, BougBack.Repo,
-  username: "postgres", # System.get_env("POSTGRES_USER"), #
-  password: "postgres", #System.get_env("POSTGRES_PASSWORD"), #
-  hostname: "localhost", #System.get_env("POSTGRES_HOST"), #
-  database: "bougainville", #System.get_env("POSTGRES_DB"), #
+  username: System.get_env("POSTGRES_USER"), #"postgres", #
+  password: System.get_env("POSTGRES_PASSWORD"), #"postgres", #
+  hostname: System.get_env("POSTGRES_HOST"), #"localhost", #
+  database: System.get_env("POSTGRES_DB"), #"bougainville", #
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

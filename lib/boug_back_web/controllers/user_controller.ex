@@ -52,6 +52,7 @@ defmodule BougBackWeb.UserController do
   defp authorize_account(conn, email, password) do
     case Guardian.authenticate(email, password) do
       {:ok, user, token} ->
+        IO.inspect(user)
         conn
         |> Plug.Conn.put_session(:user_id, user.id)
         |> put_status(:ok)
@@ -62,7 +63,6 @@ defmodule BougBackWeb.UserController do
 
   def refresh_session(conn, _) do
     token = Guardian.Plug.current_token(conn)
-    IO.inspect(item: token, label: "REFRESH TOKEN")
     {:ok, user, new_token} = Guardian.authenticate(token)
     conn
     |> Plug.Conn.put_session(:user_id, user.id)
@@ -93,9 +93,9 @@ defmodule BougBackWeb.UserController do
 
   def profil_pic(conn, %{"id" => id}) do
     pic = Accounts.get_profil_pic(id)
-    if is_nil(pic) do
+    if is_nil(pic.profil_img) do
       conn
-      |> put_status(:not_found)
+      |> put_status(:ok)
       |> json(%{no_pic: "Pas de profil pic"})
     else
       conn

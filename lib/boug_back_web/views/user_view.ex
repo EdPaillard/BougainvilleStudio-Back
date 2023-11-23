@@ -28,6 +28,7 @@ defmodule BougBackWeb.UserView do
       about: user.about,
       email: user.email,
       ville: user.ville,
+      role: user.role,
       token: token
     }
   end
@@ -37,11 +38,14 @@ defmodule BougBackWeb.UserView do
       id: user.id,
       pseudo: user.pseudo,
       email: user.email,
+      role: user.role,
       token: token
     }
   end
 
   def render("full_user.json", %{user: user}) do
+    {:ok, userRole} = Jason.encode(user.role)
+    IO.inspect(userRole)
     %{
       id: user.id,
       pseudo: user.pseudo,
@@ -49,7 +53,7 @@ defmodule BougBackWeb.UserView do
       profil_img: user.profil_img,
       email: user.email,
       ville: user.ville,
-      role: user.role,
+      role: userRole, # render_one(user.role, RoleView, "role.json"),
       heroe: render_one(user.heroe, HeroeView, "heroe.json"),
       timelines: render(user.timelines, TimelineView, "timeline.json"),
       trophies: render(user.trophies, TrophyView, "trophy.json")
